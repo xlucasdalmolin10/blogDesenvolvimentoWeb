@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>OI</title>
-</head>
-<body>
-    HAhAHHAH
-</body>
+<html>
+    <head>
+        <title>AMF blog</title>
+    </head>
+    <body>
+       <div>
+            <h1><a href="/">AMF Blog</a></h1>
+       </div>
+       {% for post in posts %}
+       <div>
+           <p>published: {{ post.data_publicacao }}</p>
+           <h1><a href="">{{ post.titulo }}</a></h1>
+           <p>{{ post.texto|linebreaksbr }}</p>
+       </div>
+       {% endfor %}
+    </body>
 </html>
