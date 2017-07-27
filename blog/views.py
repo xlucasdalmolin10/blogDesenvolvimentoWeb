@@ -87,3 +87,17 @@ def user_new(request):
     else:
         form = UserCreationForm()
         return render(request, 'user_new.html', {'form': form})
+
+def post_edit(request, pk):
+
+    if request.method == 'POST':
+        post = Post.objects.get(id = pk)
+        form = formPost(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            post = Post.objects.get(id=pk)
+            return render(request, 'post_detail.html', {'post': post})
+    else:
+        post = Post.objects.get(id=pk)
+        form = formPost(instance=post)
+        return render(request, 'post_new.html', {'form': form})
