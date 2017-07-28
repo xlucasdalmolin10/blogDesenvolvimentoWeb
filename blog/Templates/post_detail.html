@@ -20,6 +20,8 @@
 <div class="content">
 <div class="post">
     <div class="date">{{ post.data_publicacao }}   Visualizações: {{ post.visualizacoes }}</div>
+    {% if request.user.is_staff %}<div class="date"><a href="/post/{{ post.id }}/edit">editar</a></div>{% endif %}
+    {% if request.user.is_staff %}<div class="date"><a href="/post/{{ post.id }}/delete">excluir</a></div>{% endif %}
     <h1><a href="">{{ post.titulo }}</a></h1>
     <p>{{ post.texto|linebreaksbr }}</p>
 </div>

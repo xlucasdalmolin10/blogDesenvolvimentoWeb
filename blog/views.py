@@ -41,20 +41,23 @@ def post_detail(request, pk):
 def post_new(request):
     if request.user.id is None:
         return redirect(logar)
+    if request.user.is_staff:
 
-    if request.method == "POST":
-        form =  formPost(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.autor = request.user
-            post.data_criacao = timezone.now()
-            post.save()
+        if request.method == "POST":
+            form =  formPost(request.POST)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.autor = request.user
+                post.data_criacao = timezone.now()
+                post.save()
+                form = formPost()
+                return render(request, 'post_new.html', {'form': form})
+
+        else:
             form = formPost()
             return render(request, 'post_new.html', {'form': form})
-
     else:
-        form = formPost()
-        return render(request, 'post_new.html', {'form': form})
+        redirect(post_list)
 
 def logar(request):
 
@@ -90,14 +93,35 @@ def user_new(request):
 
 def post_edit(request, pk):
 
-    if request.method == 'POST':
-        post = Post.objects.get(id = pk)
-        form = formPost(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
+    if request.user.id is None:
+        return redirect(logar)
+    if request.user.is_staff:
+        if request.method == 'POST':
+            post = Post.objects.get(id = pk)
+            form = formPost(request.POST, instance=post)
+            if form.is_valid():
+                form.save()
+                post = Post.objects.get(id=pk)
+                return render(request, 'post_detail.html', {'post': post})
+        else:
             post = Post.objects.get(id=pk)
-            return render(request, 'post_detail.html', {'post': post})
+            form = formPost(instance=post)
+            return render(request, 'post_new.html', {'form': form})
+
     else:
         post = Post.objects.get(id=pk)
-        form = formPost(instance=post)
-        return render(request, 'post_new.html', {'form': form})
+        return render(request, 'post_detail.html', {'post': post})
+
+
+
+def post_delete(request, pk):
+
+    if request.user.id is None:
+        redirect(logar)
+
+    if request.user.is_staff:
+
+        Post.objects.get(id = pk).delete()
+        return redirect(post_list)
+    else:
+        return redirect(post_list)
